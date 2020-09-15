@@ -210,6 +210,16 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     res.json("citizen can logout");
   };
 
+  return {
+    del,
+    senders,
+    register,
+    login,
+    logout,
+    profile,
+    update,
+  };
+
 };
 
 module.exports = senderActions;
