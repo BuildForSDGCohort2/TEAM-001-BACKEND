@@ -199,6 +199,17 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     });
   };
 
+
+
+  /**
+   * @param       POST /api/v1/sender/logout
+   * @desc        sender can logout of the platform
+   * @access      protected( only logged in sender can access)
+   */
+  const logout = async (req, res) => {
+    res.json("citizen can logout");
+  };
+
 };
 
 module.exports = senderActions;
