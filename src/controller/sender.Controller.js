@@ -88,7 +88,6 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
-
   /**
    * @param       POST /api/v1/sender/login
    * @desc        route for senders to signin on the platform
@@ -150,7 +149,6 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
-
   /**
    * @param       GET /api/v1/sender/profile/:id
    * @desc        displays senders dashboard
@@ -161,8 +159,18 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     res.json(sender);
   };
 
-
-  
+  /**
+   * @param       PATCH /api/v1/sender/edit/:id
+   * @desc        sender can logout of the platform
+   * @access      protected( only logged in sender can access)
+   */
+  const update = async (req, res) => {
+    const sender = await Senders.findByIdAndUpdate(req.params.id, req.body);
+    res.json({
+      msg: "citizen had been edited, your profile is now updated.",
+      sender,
+    });
+  };
 };
 
 module.exports = senderActions;
