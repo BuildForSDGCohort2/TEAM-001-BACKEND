@@ -34,7 +34,7 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
               type: "DELETE",
               url: `http://localhost:3000/api/v1/sender/delete/${sender._id}`,
               description:
-                "Registered citizens can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
+                "Registered senders can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
             },
           },
         };
@@ -79,7 +79,7 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
             type: "POST",
             url: "http://localhost:3000/api/v1/sender/login",
             description:
-              "Registered citizens can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
+              "Registered senders can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
           },
         },
       });
@@ -155,8 +155,12 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
    * @access      public( only signed in senders can access)
    */
   const profile = async (req, res) => {
-    const sender = await Senders.findOne({ _id: req.params.id });
-    res.json(sender);
+    try {
+      const sender = await Senders.findOne({ _id: req.params.id });
+      res.json(sender);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   };
 
   /**
@@ -167,11 +171,10 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
   const update = async (req, res) => {
     const sender = await Senders.findByIdAndUpdate(req.params.id, req.body);
     res.json({
-      msg: "citizen had been edited, your profile is now updated.",
+      msg: "sender had been edited, your profile is now updated.",
       sender,
     });
   };
-
 
   /**
    * @param       DELETE /api/v1/sender/delete/:id
@@ -199,15 +202,13 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     });
   };
 
-
-
   /**
    * @param       POST /api/v1/sender/logout
    * @desc        sender can logout of the platform
    * @access      protected( only logged in sender can access)
    */
   const logout = async (req, res) => {
-    res.json("citizen can logout");
+    res.json("sender can logout");
   };
 
   return {
@@ -219,7 +220,6 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     profile,
     update,
   };
-
 };
 
 module.exports = senderActions;

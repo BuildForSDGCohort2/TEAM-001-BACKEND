@@ -4,7 +4,7 @@ const { secret } = require("./../../config/env");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
-const { regForm, loginForm } = require("./../middleware/formValidation")(body);
+const { regForm, loginForm } = require("./../middlewares/form")(body);
 const {
   register,
   login,
