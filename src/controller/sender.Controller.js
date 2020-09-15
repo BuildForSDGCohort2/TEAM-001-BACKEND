@@ -87,6 +87,69 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
       res.status(500).json(err);
     }
   };
+
+
+  /**
+   * @param       POST /api/v1/sender/login
+   * @desc        route for senders to signin on the platform
+   * @access      public( Every one can access)
+   */
+  const login = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { email, password } = req.body;
+
+      const user = await Senders.findOne({ email });
+
+      if (!user)
+        return res.status(401).json({
+          msg: `Invalid Credentials`,
+          request: {
+            Register: {
+              type: "POST",
+              url: "http://localhost:3000/api/v1/sender/register",
+              description:
+                "Follow the provided url to make a registration. If you are using postman to, the request will be a post request",
+            },
+          },
+        });
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      console.log(isMatch);
+
+      if (!isMatch)
+        return res.status(401).json({
+          msg: `Invalid Credentials`,
+          request: {
+            Register: {
+              type: "POST",
+              url: "http://localhost:3000/api/v1/sender/register",
+              description:
+                "Follow the provided url to make a registration. If you are using postman to, the request will be a post request",
+            },
+          },
+        });
+
+      const payload = {
+        user: user._id,
+      };
+      const token = jwt.sign(payload, secret, { expiresIn: "1hr" });
+      const heads = await res.setHeader("x-auth-header", token);
+
+      res.json({
+        msg: "you are a signed in",
+        token,
+        heads,
+      });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
   
 };
 
