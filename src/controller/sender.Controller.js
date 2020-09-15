@@ -41,6 +41,52 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
       }),
     });
   };
+
+  /**
+   * @param       POST /api/v1/sender/register
+   * @desc        route to register a sender
+   * @access      public( Every one can access)
+   */
+  const register = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { name, email, password } = req.body;
+
+      const user = await Senders.findOne({ email });
+
+      if (user) return res.status(400).json(`${email} is already in use`);
+
+      const sender = new Senders({
+        name,
+        email,
+        password,
+      });
+
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(password, salt);
+      sender.password = hash;
+
+      await sender.save();
+
+      res.status(201).json({
+        msg: `${sender.name.first} ${sender.name.last} is successfully registered`,
+        request: {
+          Login: {
+            type: "POST",
+            url: "http://localhost:3000/api/v1/sender/login",
+            description:
+              "Registered citizens can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
+          },
+        },
+      });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
   
 };
 
