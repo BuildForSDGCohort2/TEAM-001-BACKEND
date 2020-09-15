@@ -171,6 +171,34 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
       sender,
     });
   };
+
+
+  /**
+   * @param       DELETE /api/v1/sender/delete/:id
+   * @desc        Gives senders the ability to delete their account from the platform
+   * @access      protected( only signed in senders and kwauri admin can access this route)
+   */
+  const del = async (req, res) => {
+    const sender = await Senders.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      msg: `${sender.name.first} ${sender.name.last} with the id ${sender._id} is successfully deleted from the database`,
+      request: {
+        Register: {
+          type: "POST",
+          url: "http://localhost:3000/api/v1/sender/register",
+          description:
+            "Follow the provided url to make a registration. If you are using postman to, the request will be a post request",
+        },
+        Login: {
+          type: "POST",
+          url: "http://localhost:3000/api/v1/sender/login",
+          description:
+            "Registered senders can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
+        },
+      },
+    });
+  };
+
 };
 
 module.exports = senderActions;
