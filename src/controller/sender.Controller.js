@@ -150,6 +150,18 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
+
+  /**
+   * @param       GET /api/v1/sender/profile/:id
+   * @desc        displays senders dashboard
+   * @access      public( only signed in senders can access)
+   */
+  const profile = async (req, res) => {
+    const sender = await Senders.findOne({ _id: req.params.id });
+    res.json(sender);
+  };
+
+
   
 };
 
