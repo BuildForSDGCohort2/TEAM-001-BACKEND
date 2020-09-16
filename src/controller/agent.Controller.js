@@ -163,7 +163,7 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
-    /**
+  /**
    * @param       PATCH /api/v1/agent/edit/:id
    * @desc        agent can logout of the platform
    * @access      protected( only logged in agent can access)
@@ -202,14 +202,23 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
     });
   };
 
+  /**
+   * @param       POST /api/v1/agent/logout
+   * @desc        agent can logout of the platform
+   * @access      protected( only logged in agent can access)
+   */
+  const logout = async (req, res) => {
+    res.json("agent can logout");
+  };
+
   return {
     login,
     profile,
     register,
     agents,
     update,
-    del
-
+    del,
+    logout
   };
 };
 
