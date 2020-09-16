@@ -1,4 +1,4 @@
-const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
+const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
   /**
    * @param       GET /api/v1/agent
    * @desc        displays all the registered agents on the platform
@@ -8,13 +8,13 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
     const agents = await Agents.find({});
     res.status(200).json({
       totalAgents: agents.length,
-      senders: agents.map((agent) => {
+      agents: agents.map((agent) => {
         return {
           agent,
           request: {
             "view Agent": {
               type: "GET",
-              url: `http://localhost:3000/api/v1/agent/profile/${sender._id}`,
+              url: `http://localhost:3000/api/v1/agent/profile/${agent._id}`,
               description:
                 "Click on the url to view all the detail about this agent",
             },
@@ -32,7 +32,7 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
             },
             "Delete Agent": {
               type: "DELETE",
-              url: `http://localhost:3000/api/v1/agent/delete/${sender._id}`,
+              url: `http://localhost:3000/api/v1/agent/delete/${agent._id}`,
               description:
                 "Registered agents can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
             },
@@ -44,7 +44,7 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
 
   /**
    * @param       POST /api/v1/agent/register
-   * @desc        route to register a sender
+   * @desc        route to register a agent
    * @access      public( Every one can access)
    */
   const register = async (req, res) => {
@@ -56,7 +56,7 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
     try {
       const { name, email, password } = req.body;
 
-      const user = await Senders.findOne({ email });
+      const user = await Agents.findOne({ email });
 
       if (user) return res.status(400).json(`${email} is already in use`);
 
@@ -68,7 +68,7 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
 
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
-      sender.password = hash;
+      agent.password = hash;
 
       await agent.save();
 
@@ -88,7 +88,7 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
-   /**
+  /**
    * @param       POST /api/v1/agent/login
    * @desc        route for agents to signin on the platform
    * @access      public( Every one can access)
@@ -149,11 +149,26 @@ const agentActins = (Agents, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
+  /**
+   * @param       GET /api/v1/agent/profile/:id
+   * @desc        displays agents dashboard
+   * @access      public( only signed in agents can access)
+   */
+  const profile = async (req, res) => {
+    try {
+      const agent = await Agents.findOne({ _id: req.params.id });
+      res.json(agent);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
   return {
-      login,
+    login,
+    profile,
     register,
     agents,
   };
 };
 
-module.exports = agentActins;
+module.exports = agentActions;
