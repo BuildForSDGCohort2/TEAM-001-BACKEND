@@ -163,11 +163,25 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
     }
   };
 
+    /**
+   * @param       PATCH /api/v1/agent/edit/:id
+   * @desc        agent can logout of the platform
+   * @access      protected( only logged in agent can access)
+   */
+  const update = async (req, res) => {
+    const agent = await Agents.findByIdAndUpdate(req.params.id, req.body);
+    res.json({
+      msg: "sender had been edited, your profile is now updated.",
+      agent,
+    });
+  };
   return {
     login,
     profile,
     register,
     agents,
+    update,
+    
   };
 };
 
