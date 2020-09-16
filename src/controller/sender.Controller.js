@@ -203,12 +203,12 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
   };
 
   /**
-   * @param       POST /api/v1/sender/logout
-   * @desc        sender can logout of the platform
-   * @access      protected( only logged in sender can access)
+   * @param       POST /api/v1/agent/logout
+   * @desc        agent can logout of the platform
+   * @access      protected( only logged in agent can access)
    */
   const logout = async (req, res) => {
-    res.json("sender can logout");
+    res.json("agent can logout");
   };
 
   return {

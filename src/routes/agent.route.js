@@ -10,7 +10,7 @@ const {
   profile,
   register,
   agents,
-  // logout,
+  logout,
   del,
   update,
 } = require("../controller/agent.Controller")(
@@ -31,6 +31,6 @@ agentRouter.route("/register").post(register);
 // agentRouter.route("/logout").post(logout);
 agentRouter.route("/profile/:id").get(profile);
 agentRouter.route("/edit/:id").patch(update);
-// agentRouter.route("/delete/:id").delete(del);
+agentRouter.route("/delete/:id").delete(del);
 
 module.exports = agentRouter;

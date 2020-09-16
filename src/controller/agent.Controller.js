@@ -175,13 +175,41 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
       agent,
     });
   };
+
+  /**
+   * @param       DELETE /api/v1/agent/delete/:id
+   * @desc        Gives agents the ability to delete their account from the platform
+   * @access      protected( only signed in agents and kwauri admin can access this route)
+   */
+  const del = async (req, res) => {
+    const agent = await Agentes.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      msg: `${agent.name.first} ${agent.name.last} with the id ${agent._id} is successfully deleted from the database`,
+      request: {
+        Register: {
+          type: "POST",
+          url: "http://localhost:3000/api/v1/agent/register",
+          description:
+            "Follow the provided url to make a registration. If you are using postman to, the request will be a post request",
+        },
+        Login: {
+          type: "POST",
+          url: "http://localhost:3000/api/v1/agent/login",
+          description:
+            "Registered senders can follow the provided url to login to their profile page. If you are using postman to, the request will be a post request",
+        },
+      },
+    });
+  };
+
   return {
     login,
     profile,
     register,
     agents,
     update,
-    
+    del
+
   };
 };
 
