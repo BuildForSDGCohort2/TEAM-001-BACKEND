@@ -28,7 +28,7 @@ const agentRouter = Router();
 agentRouter.route("/").get(agents);
 agentRouter.route("/login").post(loginForm, login);
 agentRouter.route("/register").post(register);
-// agentRouter.route("/logout").post(logout);
+agentRouter.route("/logout").post(logout);
 agentRouter.route("/profile/:id").get(profile);
 agentRouter.route("/edit/:id").patch(update);
 agentRouter.route("/delete/:id").delete(del);
