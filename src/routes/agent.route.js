@@ -13,6 +13,7 @@ const {
   logout,
   del,
   update,
+  upload,
 } = require("../controller/agent.Controller")(
   Agents,
   bcrypt,
@@ -29,6 +30,7 @@ agentRouter.route("/").get(agents);
 agentRouter.route("/login").post(loginForm, login);
 agentRouter.route("/register").post(register);
 agentRouter.route("/logout").post(logout);
+agentRouter.route("/upload").post(upload);
 agentRouter.route("/profile/:id").get(profile);
 agentRouter.route("/edit/:id").patch(update);
 agentRouter.route("/delete/:id").delete(del);

@@ -17,13 +17,14 @@ const sender = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     password: {
       type: String,
       required: true,
     },
-    nationality: String
+    nationality: String,
+    picture: String,
   },
   {
     timestamps: true,

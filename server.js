@@ -2,9 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { PORT, url } = require("./config/env");
 require("./config/database")();
+const fileUpload = require("express-fileupload");
 
 const app = express();
 
+app.use(fileUpload());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 

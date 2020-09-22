@@ -164,6 +164,34 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
   };
 
   /**
+   * @param       POST /api/v1/sender/upload/
+   * @desc        sender can upload picture
+   * @access      protected( only logged in senders can access)
+   */
+  const upload = async (req, res) => {
+    try {
+      const { sender_id } = req.body;
+      const picture = req.files.picture;
+      const sender = await Senders.findById(sender_id);
+      sender.picture = picture.name;
+      sender.save();
+      picture.mv("./uploads/senders/pictures/" + picture.name, function (
+        err,
+        result
+      ) {
+        if (err) throw err;
+        res.json({
+          success: true,
+          msg: "Picture uploaded!",
+          sender,
+        });
+      });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
+  /**
    * @param       PATCH /api/v1/sender/edit/:id
    * @desc        sender can logout of the platform
    * @access      protected( only logged in sender can access)
@@ -219,6 +247,7 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     logout,
     profile,
     update,
+    upload,
   };
 };
 

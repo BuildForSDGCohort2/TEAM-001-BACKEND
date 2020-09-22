@@ -164,6 +164,34 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
   };
 
   /**
+   * @param       POST /api/v1/sender/upload/
+   * @desc        sender can upload picture
+   * @access      protected( only logged in senders can access)
+   */
+  const upload = async (req, res) => {
+    try {
+      const { agent_id } = req.body;
+      const picture = req.files.picture;
+      const agent = await Agents.findById(agent_id);
+      agent.picture = picture.name;
+      agent.save();
+      picture.mv("./uploads/agents/pictures/" + picture.name, function (
+        err,
+        result
+      ) {
+        if (err) throw err;
+        res.json({
+          success: true,
+          msg: "Picture uploaded!",
+          agent,
+        });
+      });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
+  /**
    * @param       PATCH /api/v1/agent/edit/:id
    * @desc        agent can logout of the platform
    * @access      protected( only logged in agent can access)
@@ -218,7 +246,8 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
     agents,
     update,
     del,
-    logout
+    logout,
+    upload,
   };
 };
 

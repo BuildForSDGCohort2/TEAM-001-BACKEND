@@ -12,7 +12,8 @@ const {
   profile,
   senders,
   del,
-  update
+  update,
+  upload,
 } = require("./../controller/sender.Controller")(
   Senders,
   bcrypt,
@@ -28,6 +29,7 @@ const senderRouter = Router();
 senderRouter.route("/register").post(register);
 senderRouter.route("/login").post(loginForm, login);
 senderRouter.route("/logout").post(logout);
+senderRouter.route("/upload").post(upload);
 senderRouter.route("/").get(senders);
 senderRouter.route("/profile/:id").get(profile);
 senderRouter.route("/edit/:id").patch(update);
