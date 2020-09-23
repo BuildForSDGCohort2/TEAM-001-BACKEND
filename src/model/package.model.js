@@ -6,7 +6,7 @@ const package = new Schema(
   {
     sender: {
       type: Schema.Types.ObjectId,
-      ref: sender,
+      ref: "sender",
     },
     packageName: {
       type: String,
