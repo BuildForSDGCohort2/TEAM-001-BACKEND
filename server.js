@@ -6,7 +6,10 @@ const fileUpload = require("express-fileupload");
 
 const app = express();
 
-app.use(fileUpload());
+app.use(fileUpload({
+    createParentPath: true,
+    debug: true,
+}));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
