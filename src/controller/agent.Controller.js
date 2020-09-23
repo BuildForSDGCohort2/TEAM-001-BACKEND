@@ -137,12 +137,10 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
         user: user._id,
       };
       const token = jwt.sign(payload, secret, { expiresIn: "1hr" });
-      const heads = await res.setHeader("x-auth-header", token);
 
       res.json({
         msg: "you are a signed in",
         token,
-        heads,
       });
     } catch (err) {
       res.status(500).json(err);
