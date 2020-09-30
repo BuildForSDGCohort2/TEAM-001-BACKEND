@@ -1,10 +1,12 @@
 const express = require("express");
 const Senders = require("./../model/sender.model");
+const auth = require('./../middlewares/auth')
 const { secret } = require("./../../config/env");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { body, validationResult } = require("express-validator");
-const { regForm, loginForm } = require("./../middlewares/form")(body);
+const { check, validationResult } = require("express-validator");
+const { regForm, loginForm } = require("./../middlewares/form")(check);
+check().normalizeEmail
 const {
   register,
   login,
@@ -12,7 +14,8 @@ const {
   profile,
   senders,
   del,
-  update
+  update,
+  upload,
 } = require("./../controller/sender.Controller")(
   Senders,
   bcrypt,
@@ -25,12 +28,13 @@ const { Router } = express;
 
 const senderRouter = Router();
 
-senderRouter.route("/register").post(register);
+senderRouter.route("/register").post(regForm, register);
 senderRouter.route("/login").post(loginForm, login);
-senderRouter.route("/logout").post(logout);
+senderRouter.route("/logout").post(auth, logout);
+senderRouter.route("/profile/upload").post(auth, upload);
 senderRouter.route("/").get(senders);
-senderRouter.route("/profile/:id").get(profile);
-senderRouter.route("/edit/:id").patch(update);
-senderRouter.route("/delete/:id").delete(del);
+senderRouter.route("/profile/:id").get(auth, profile);
+senderRouter.route("/profile/edit/:id").patch(auth,update);
+senderRouter.route("profile/delete/:id").delete(auth,del);
 
 module.exports = senderRouter;

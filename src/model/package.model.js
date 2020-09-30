@@ -4,20 +4,46 @@ const { Schema } = mongoose;
 
 const package = new Schema(
   {
-    name: {
+    sender: {
+      type: Schema.Types.ObjectId,
+      ref: "senders",
+    },
+    packageName: {
+      type: String,
+      required: true,
+    },
+    destination: {
+      country: {
         type: String,
         required: true,
+      },
+      state: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      receiverName: {
+        type: String,
+        required: true,
+      },
+      receiverAddress: {
+        type: String,
+        required: true,
+      },
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true
+    receiverContact: {
+      phone: String,
+      email: String
     },
-    password: {
-      type: String,
-      required: true,
+    size: String,
+    agent: {
+      type: Schema.Types.ObjectId,
+      ref: "agents",
     },
-    nationality: String
+    description: String,
   },
   {
     timestamps: true,

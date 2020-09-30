@@ -1,3 +1,4 @@
+const path = require("path");
 const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
   /**
    * @param       GET /api/v1/sender
@@ -164,6 +165,48 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
   };
 
   /**
+   * @param       POST /api/v1/sender/upload/
+   * @desc        sender can upload picture
+   * @access      protected( only logged in senders can access)
+   */
+  const upload = async (req, res) => {
+    try {
+      //checks if file is attached
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).json({ msg: "You forgot to attach a picture" });
+      }
+
+      const { sender_id } = req.body;
+      const picture = req.files.picture;
+
+      //Checks if the attached file is a picture
+      if (!picture.mimetype.includes("image"))
+        return res
+          .status(415)
+          .json({ msg: "Sorry....!!! You can only upload pictures" });
+
+      //uploads picture
+      const sender = await Senders.findById(sender_id);
+      sender.picture = picture.name;
+      sender.save();
+      picture.mv(
+        `${path.join(__dirname, "./../../uploads/senders/pictures/")}` +
+          picture.name,
+        function (err) {
+          if (err) throw err;
+          res.json({
+            success: true,
+            msg: "Picture uploaded!",
+            sender,
+          });
+        }
+      );
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
+  /**
    * @param       PATCH /api/v1/sender/edit/:id
    * @desc        sender can logout of the platform
    * @access      protected( only logged in sender can access)
@@ -219,6 +262,7 @@ const senderActions = (Senders, bcrypt, secret, jwt, validationResult) => {
     logout,
     profile,
     update,
+    upload,
   };
 };
 

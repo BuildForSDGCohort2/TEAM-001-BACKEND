@@ -137,12 +137,10 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
         user: user._id,
       };
       const token = jwt.sign(payload, secret, { expiresIn: "1hr" });
-      const heads = await res.setHeader("x-auth-header", token);
 
       res.json({
         msg: "you are a signed in",
         token,
-        heads,
       });
     } catch (err) {
       res.status(500).json(err);
@@ -164,6 +162,48 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
   };
 
   /**
+   * @param       POST /api/v1/sender/upload/
+   * @desc        sender can upload picture
+   * @access      protected( only logged in senders can access)
+   */
+  const upload = async (req, res) => {
+    try {
+      //checks if file is attached
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).json({ msg: "You forgot to attach a picture" });
+      }
+
+      const { agent_id } = req.body;
+      const picture = req.files.picture;
+
+      //Checks if the attached file is a picture
+      if (!picture.mimetype.includes("image"))
+        return res
+          .status(415)
+          .json({ msg: "Sorry....!!! You can only upload pictures" });
+
+      //uploads picture
+      const agent = await Agents.findById(agent_id);
+      agent.picture = picture.name;
+      agent.save();
+      picture.mv(
+        `${path.join(__dirname, "./../../uploads/agents/pictures/")}` +
+          picture.name,
+        function (err) {
+          if (err) throw err;
+          res.json({
+            success: true,
+            msg: "Picture uploaded!",
+            agent,
+          });
+        }
+      );
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+
+  /**
    * @param       PATCH /api/v1/agent/edit/:id
    * @desc        agent can logout of the platform
    * @access      protected( only logged in agent can access)
@@ -171,7 +211,7 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
   const update = async (req, res) => {
     const agent = await Agents.findByIdAndUpdate(req.params.id, req.body);
     res.json({
-      msg: "sender had been edited, your profile is now updated.",
+      msg: "agent had been edited, your profile is now updated.",
       agent,
     });
   };
@@ -218,7 +258,8 @@ const agentActions = (Agents, bcrypt, secret, jwt, validationResult) => {
     agents,
     update,
     del,
-    logout
+    logout,
+    upload,
   };
 };
 
