@@ -6,7 +6,7 @@ const package = new Schema(
   {
     sender: {
       type: Schema.Types.ObjectId,
-      ref: "sender",
+      ref: "senders",
     },
     packageName: {
       type: String,
@@ -33,17 +33,17 @@ const package = new Schema(
         type: String,
         required: true,
       },
-      receiverContact: {
-        type: String,
-        required: true,
-      },
+    },
+    receiverContact: {
+      phone: String,
+      email: String
     },
     size: String,
     agent: {
-      type: String,
-      required: true
+      type: Schema.Types.ObjectId,
+      ref: "agents",
     },
-    description: String
+    description: String,
   },
   {
     timestamps: true,

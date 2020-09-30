@@ -1,16 +1,37 @@
-const packageActions = () => {
-    const packages = async (req, res) => {
+const packageActions = (Packages, Agents, Senders) => {
+  const packages = async (req, res) => {
+    res.json("all packages are declared here");
+  };
 
-        res.json('all packages are declared here')
-    }
+  const addPackage = async (req, res) => {
 
-    const addPackage = async (req, res) => {
-        res.json('new package added')
-    }
-    return {
-        packages,
-        addPackage
-    }
-}
+    try {
+      
+      const { packageName, destination, size, description } = req.body;
 
-module.exports = packageActions
+      const agent = await Agent.find(req.params.agentId)
+      const sender = await Senders.find(req.params.senderId)
+  
+      const package = new Packages({
+        packageName,
+        destination,
+        description,
+        agent: 
+        size,
+      });
+  
+      console.log(package);
+  
+      res.json("new package added");
+    } catch (err) {
+      res.status(500).json(err)
+      
+    }
+  };
+  return {
+    packages,
+    addPackage,
+  };
+};
+
+module.exports = packageActions;
